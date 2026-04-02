@@ -3,6 +3,26 @@ import { exec, toast } from '../kernelsu.js'
 import { loadNavbar, setNavbar, whichCurrentPage } from './navbar.js'
 import { runMainPageTransition, runMiniPageEnter, runMiniPageLeave } from './animator.js'
 
+;(() => {
+	const element = document.getElementById("umount_toggle")
+
+	exec("[[ -e '/data/adb/modules/brezygisk/disable_unmount' ]]").then(result => {
+		if (result.errno !== 0) {
+			element.setAttribute('checked', '')
+		}
+	})
+
+	element.addEventListener('click', async () => {
+		const enabled = element.checked
+
+		if (enabled) {
+			exec("rm -f /data/adb/modules/brezygisk/disable_unmount")
+		} else {
+			exec("touch /data/adb/modules/brezygisk/disable_unmount")
+		}
+	})
+})()
+
 /* INFO: Prototypes */
 import utils from './utils.js'
 
