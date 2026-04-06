@@ -4,5 +4,3 @@ version=${versionName}
 versionCode=${versionCode}
 author=The PerformanC Organization & skye-tachyon
 description=Standalone implementation of Zygisk.
-updateJson=https://raw.githubusercontent.com/ThePedroo/RemoteFiles/refs/heads/main/ReZygisk/update.json
-managedFeatures=kernel_umount
