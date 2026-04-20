@@ -231,17 +231,24 @@ bool ksu_uid_is_manager(uid_t uid) {
     //   return uid == manager_uid;
     // }
 
-    const char *manager_path = "/data/user_de/0/who.is.skye.kernalsu";
+    const char *manager_path;
     struct stat st;
-    if (stat(manager_path, &st) == -1) {
-      if (errno != ENOENT) {
-        LOGE("Failed to stat KSU manager data directory: %s", strerror(errno));
-      }
+    
+    manager_path = "/data/user_de/0/who.is.skye.kernalsu";
+    if (stat(manager_path, &st) == 0) {
+      return st.st_uid == uid;
+    } else if (errno != ENOENT) {
+        LOGE("Failed to stat SKSU manager data directory: %s", strerror(errno));
+    } 
 
-      return false;
+    manager_path = "/data/user_de/0/me.weishu.kernelsu";
+    if (stat(manager_path, &st) == 0) {
+      return st.st_uid == uid;
+    } else if (errno != ENOENT) {
+         LOGE("Failed to stat Official KSU manager data directory: %s", strerror(errno));
     }
 
-    return st.st_uid == uid;
+      return false;
   }
 
   /* INFO: If it uses ioctl, it already has support to get manager UID operation */
