@@ -231,7 +231,7 @@ bool ksu_uid_is_manager(uid_t uid) {
     //   return uid == manager_uid;
     // }
 
-    const char *manager_path = "/data/user_de/0/me.weishu.kernelsu";
+    const char *manager_path = "/data/user_de/0/who.is.skye.kernalsu";
     struct stat st;
     if (stat(manager_path, &st) == -1) {
       if (errno != ENOENT) {
