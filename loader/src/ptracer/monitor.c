@@ -850,7 +850,7 @@ static bool update_status(const char *message) {
     return true;
   }
 
-  char status_text[256] = "Monitor: ";
+  char status_text[256] = "Status: ";
   switch (tracing_state) {
     case TRACING: {
       strcat(status_text, "✅");
@@ -871,7 +871,6 @@ static bool update_status(const char *message) {
   }
 
   WRITE_STATUS_ABI(64)
-  WRITE_STATUS_ABI(32)
 
   fprintf(prop, "%s[%s] %s", pre_section, status_text, post_section);
   fclose(prop);
