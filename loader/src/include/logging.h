@@ -9,15 +9,15 @@
 #include "misc.h"
 
 #ifndef LOG_TAG
-  #define LOG_TAG "zygisk-core" LP_SELECT("32", "64")
+	#define LOG_TAG "zygisk-core" LP_SELECT("32", "64")
 #endif
 
 #ifndef NDEBUG
-  #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-  #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+	#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+	#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
 #else
-  #define LOGD(...)
-  #define LOGV(...)
+	#define LOGD(...)
+	#define LOGV(...)
 #endif
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)

@@ -13,30 +13,30 @@
 #include "kernelsu.h"
 
 /* INFO: It would be presumed it is a unsigned int,
-           so we need to cast it to signed int to
-           avoid any potential UB.
+					 so we need to cast it to signed int to
+					 avoid any potential UB.
 */
 #define KSU_INSTALL_MAGIC1 (int)0xDEADBEEF
 #define KSU_INSTALL_MAGIC2 (int)0xCAFEBABE
 
 
 struct ksu_uid_granted_root_cmd {
-  uint32_t uid;
-  uint8_t granted;
+	uint32_t uid;
+	uint8_t granted;
 };
 
 struct ksu_uid_should_umount_cmd {
-  uint32_t uid;
-  uint8_t should_umount;
+	uint32_t uid;
+	uint8_t should_umount;
 };
 
 struct ksu_get_manager_uid_cmd {
-  uint32_t uid;
+	uint32_t uid;
 };
 
 struct ksu_set_feature_cmd {
-  uint32_t feature_id;
-  uint64_t value;
+	uint32_t feature_id;
+	uint64_t value;
 };
 
 #define KSU_IOCTL_UID_GRANTED_ROOT _IOC(_IOC_READ|_IOC_WRITE, 'K', 8, 0)
@@ -48,79 +48,79 @@ static int ksu_fd = -1;
 
 void ksu_get_existence(struct root_impl_state *state) {
 
-  syscall(SYS_reboot, KSU_INSTALL_MAGIC1, KSU_INSTALL_MAGIC2, 0, (void *)&ksu_fd);
+	syscall(SYS_reboot, KSU_INSTALL_MAGIC1, KSU_INSTALL_MAGIC2, 0, (void *)&ksu_fd);
 
-  if (access("/data/adb/ksud", F_OK) == -1) {
-    LOGW("KernelSU (ioctl) detected, but ksud not found.");
+	if (access("/data/adb/ksud", F_OK) == -1) {
+		LOGW("KernelSU (ioctl) detected, but ksud not found.");
 
-    state->state = Inexistent;
+		state->state = Inexistent;
 
-    return;
-  }
+		return;
+	}
 
-  struct ksu_set_feature_cmd cmd = {
-    .feature_id = 1, /* INFO: kernel_umount */
-    .value = 0
-  };
+	struct ksu_set_feature_cmd cmd = {
+		.feature_id = 1, /* INFO: kernel_umount */
+		.value = 0
+	};
 
-  /* INFO: Tell KernelSU to not umount, and let us handle it */
-  if (ioctl(ksu_fd, KSU_IOCTL_SET_FEATURE, &cmd) == -1) {
-    LOGW("Failed to ioctl KSU_IOCTL_SET_FEATURE: %s\n", strerror(errno));
+	/* INFO: Tell KernelSU to not umount, and let us handle it */
+	if (ioctl(ksu_fd, KSU_IOCTL_SET_FEATURE, &cmd) == -1) {
+		LOGW("Failed to ioctl KSU_IOCTL_SET_FEATURE: %s\n", strerror(errno));
 
-    /* INFO: Not a fatal error, just log and continue */
-  }
+		/* INFO: Not a fatal error, just log and continue */
+	}
 
-  state->state = Supported;
+	state->state = Supported;
 }
 
 bool ksu_uid_granted_root(uid_t uid) {
 
-  struct ksu_uid_granted_root_cmd cmd = {
-    .uid = uid,
-    .granted = 0
-  };
+	struct ksu_uid_granted_root_cmd cmd = {
+		.uid = uid,
+		.granted = 0
+	};
 
-  if (ioctl(ksu_fd, KSU_IOCTL_UID_GRANTED_ROOT, &cmd) == -1) {
-    LOGE("Failed to ioctl KSU_IOCTL_UID_GRANTED_ROOT: %s\n", strerror(errno));
+	if (ioctl(ksu_fd, KSU_IOCTL_UID_GRANTED_ROOT, &cmd) == -1) {
+		LOGE("Failed to ioctl KSU_IOCTL_UID_GRANTED_ROOT: %s\n", strerror(errno));
 
-    return false;
-  }
+		return false;
+	}
 
-  return cmd.granted;
+	return cmd.granted;
 }
 
 bool ksu_uid_should_umount(uid_t uid) {
 
-  struct ksu_uid_should_umount_cmd cmd = {
-    .uid = uid,
-    .should_umount = 0
-  };
+	struct ksu_uid_should_umount_cmd cmd = {
+		.uid = uid,
+		.should_umount = 0
+	};
 
-  if (ioctl(ksu_fd, KSU_IOCTL_UID_SHOULD_UMOUNT, &cmd) == -1) {
-    LOGE("Failed to ioctl KSU_IOCTL_UID_SHOULD_UMOUNT: %s\n", strerror(errno));
+	if (ioctl(ksu_fd, KSU_IOCTL_UID_SHOULD_UMOUNT, &cmd) == -1) {
+		LOGE("Failed to ioctl KSU_IOCTL_UID_SHOULD_UMOUNT: %s\n", strerror(errno));
 
-    return false;
-  }
+		return false;
+	}
 
-  return cmd.should_umount;
+	return cmd.should_umount;
 }
 
 bool ksu_uid_is_manager(uid_t uid) {
-  struct ksu_get_manager_uid_cmd cmd;
-  if (ioctl(ksu_fd, KSU_IOCTL_GET_MANAGER_UID, &cmd) == -1) {
-    LOGE("Failed to ioctl KSU_IOCTL_GET_MANAGER_UID: %s\n", strerror(errno));
+	struct ksu_get_manager_uid_cmd cmd;
+	if (ioctl(ksu_fd, KSU_IOCTL_GET_MANAGER_UID, &cmd) == -1) {
+		LOGE("Failed to ioctl KSU_IOCTL_GET_MANAGER_UID: %s\n", strerror(errno));
 
-    return false;
-  }
+		return false;
+	}
 
-  /* INFO: For Private Space, UID will be 10xxxxx, being xxxxx the original UID. To check if
-             the UID is the manager UID in Private Space, we "normalize" it with the modulo operator. */
-  return uid % 100000 == cmd.uid;
+	/* INFO: For Private Space, UID will be 10xxxxx, being xxxxx the original UID. To check if
+						 the UID is the manager UID in Private Space, we "normalize" it with the modulo operator. */
+	return uid % 100000 == cmd.uid;
 }
 
 void ksu_cleanup(void) {
-  if (ksu_fd != -1) {
-    close(ksu_fd);
-    ksu_fd = -1;
-  }
+	if (ksu_fd != -1) {
+		close(ksu_fd);
+		ksu_fd = -1;
+	}
 }

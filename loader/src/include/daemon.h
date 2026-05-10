@@ -6,37 +6,37 @@
 #include <unistd.h>
 
 enum rezygiskd_actions {
-  ZygoteInjected,
-  GetProcessFlags,
-  GetInfo,
-  ReadModules,
-  RequestCompanionSocket,
-  GetModuleDir,
-  ZygoteRestart,
-  UpdateMountNamespace,
-  RemoveModule
+	ZygoteInjected,
+	GetProcessFlags,
+	GetInfo,
+	ReadModules,
+	RequestCompanionSocket,
+	GetModuleDir,
+	ZygoteRestart,
+	UpdateMountNamespace,
+	RemoveModule
 };
 
 struct zygisk_modules {
-  char **modules;
-  size_t modules_count;
+	char **modules;
+	size_t modules_count;
 };
 
 struct rezygisk_info {
-  struct zygisk_modules modules;
-  pid_t pid;
-  bool running;
+	struct zygisk_modules modules;
+	pid_t pid;
+	bool running;
 };
 
 enum mount_namespace_state {
-  Clean,
-  Mounted
+	Clean,
+	Mounted
 };
 
 #define TMP_PATH "/data/adb/nozygisk"
 
 static inline const char *rezygiskd_get_path() {
-  return TMP_PATH;
+	return TMP_PATH;
 }
 
 int rezygiskd_connect(uint8_t retry);

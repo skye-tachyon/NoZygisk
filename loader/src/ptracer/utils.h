@@ -10,32 +10,32 @@
 
 /* Redefining logging macros with different tag */
 #ifndef LOG_TAG
-  #define LOG_TAG "zygisk-ptrace" LP_SELECT("32", "64")
+	#define LOG_TAG "zygisk-ptrace" LP_SELECT("32", "64")
 #endif
 
 #include "logging.h"
 
 #if defined(__x86_64__)
-  #define REG_SP rsp
-  #define REG_IP rip
-  #define REG_RET rax
-  #define REG_SYSNR orig_rax
+	#define REG_SP rsp
+	#define REG_IP rip
+	#define REG_RET rax
+	#define REG_SYSNR orig_rax
 #elif defined(__i386__)
-  #define REG_SP esp
-  #define REG_IP eip
-  #define REG_RET eax
-  #define REG_SYSNR orig_eax
+	#define REG_SP esp
+	#define REG_IP eip
+	#define REG_RET eax
+	#define REG_SYSNR orig_eax
 #elif defined(__aarch64__)
-  #define REG_SP sp
-  #define REG_IP pc
-  #define REG_RET regs[0]
-  #define REG_SYSNR regs[8]
+	#define REG_SP sp
+	#define REG_IP pc
+	#define REG_RET regs[0]
+	#define REG_SYSNR regs[8]
 #elif defined(__arm__)
-  #define REG_SP uregs[13]
-  #define REG_IP uregs[15]
-  #define REG_RET uregs[0]
-  #define REG_SYSNR uregs[7]
-  #define user_regs_struct user_regs
+	#define REG_SP uregs[13]
+	#define REG_IP uregs[15]
+	#define REG_RET uregs[0]
+	#define REG_SYSNR uregs[7]
+	#define user_regs_struct user_regs
 #endif
 
 ssize_t write_proc(int pid, uintptr_t remote_addr, const void *buf, size_t len);
@@ -66,9 +66,9 @@ uintptr_t find_syscall_gadget(int pid, struct maps_info *remote_map);
 
 /* INFO: Tango-specific linker watch state */
 struct tango_linker_watch {
-  uint32_t libc_init_got_slot;
-  uint32_t libc_init_initial;
-  uint32_t libc_init_resolved;
+	uint32_t libc_init_got_slot;
+	uint32_t libc_init_initial;
+	uint32_t libc_init_resolved;
 };
 
 bool ptrace_poke_u32(pid_t pid, uintptr_t addr, uint32_t value);
@@ -95,26 +95,26 @@ void tracee_skip_syscall(int pid);
 #define CASE_CONST_RETURN(x) case x: return #x;
 
 static inline const char *parse_ptrace_event(int status) {
-  status = status >> 16;
+	status = status >> 16;
 
-  switch (status) {
-    CASE_CONST_RETURN(PTRACE_EVENT_FORK)
-    CASE_CONST_RETURN(PTRACE_EVENT_VFORK)
-    CASE_CONST_RETURN(PTRACE_EVENT_CLONE)
-    CASE_CONST_RETURN(PTRACE_EVENT_EXEC)
-    CASE_CONST_RETURN(PTRACE_EVENT_VFORK_DONE)
-    CASE_CONST_RETURN(PTRACE_EVENT_EXIT)
-    CASE_CONST_RETURN(PTRACE_EVENT_SECCOMP)
-    CASE_CONST_RETURN(PTRACE_EVENT_STOP)
-    default:
-      return "(no event)";
-  }
+	switch (status) {
+		CASE_CONST_RETURN(PTRACE_EVENT_FORK)
+		CASE_CONST_RETURN(PTRACE_EVENT_VFORK)
+		CASE_CONST_RETURN(PTRACE_EVENT_CLONE)
+		CASE_CONST_RETURN(PTRACE_EVENT_EXEC)
+		CASE_CONST_RETURN(PTRACE_EVENT_VFORK_DONE)
+		CASE_CONST_RETURN(PTRACE_EVENT_EXIT)
+		CASE_CONST_RETURN(PTRACE_EVENT_SECCOMP)
+		CASE_CONST_RETURN(PTRACE_EVENT_STOP)
+		default:
+			return "(no event)";
+	}
 }
 
 static inline const char *sigabbrev_np(int sig) {
-  if (sig > 0 && sig < NSIG) return sys_signame[sig];
+	if (sig > 0 && sig < NSIG) return sys_signame[sig];
 
-  return "(unknown)";
+	return "(unknown)";
 }
 
 int get_program(int pid, char *buf, size_t size);

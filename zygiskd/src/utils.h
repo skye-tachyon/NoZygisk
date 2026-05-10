@@ -13,49 +13,49 @@
 #define CONCAT(x,y) CONCAT_(x,y)
 
 #ifdef __LP64__
-  #define LP_SELECT(a, b) b
+	#define LP_SELECT(a, b) b
 #else
-  #define LP_SELECT(a, b) a
+	#define LP_SELECT(a, b) a
 #endif
 
 #ifndef LOG_TAG
-  #define LOG_TAG "zygiskd" LP_SELECT("32", "64")
+	#define LOG_TAG "zygiskd" LP_SELECT("32", "64")
 #endif
 
-#define LOGI(...)                                              \
-  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__); \
-  printf(__VA_ARGS__)
+#define LOGI(...)																							\
+	__android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__); \
+	printf(__VA_ARGS__)
 
-#define LOGW(...)                                                \
-  __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__);   \
-  printf(__VA_ARGS__)
+#define LOGW(...)																								\
+	__android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__);	 \
+	printf(__VA_ARGS__)
 
-#define LOGE(...)                                                \
-  __android_log_print(ANDROID_LOG_ERROR , LOG_TAG, __VA_ARGS__); \
-  printf(__VA_ARGS__)
+#define LOGE(...)																								\
+	__android_log_print(ANDROID_LOG_ERROR , LOG_TAG, __VA_ARGS__); \
+	printf(__VA_ARGS__)
 
-#define ASSURE_SIZE_WRITE(area_name, subarea_name, sent_size, expected_size, return_type)                        \
-  if (sent_size != (ssize_t)(expected_size)) {                                                                   \
-    LOGE("Failed to sent " subarea_name " in " area_name ": Expected %zu, got %zd\n", expected_size, sent_size); \
-                                                                                                                 \
-    return_type;                                                                                                 \
-  }
+#define ASSURE_SIZE_WRITE(area_name, subarea_name, sent_size, expected_size, return_type)												\
+	if (sent_size != (ssize_t)(expected_size)) {																																	 \
+		LOGE("Failed to sent " subarea_name " in " area_name ": Expected %zu, got %zd\n", expected_size, sent_size); \
+																																																								 \
+		return_type;																																																 \
+	}
 
-#define ASSURE_SIZE_READ(area_name, subarea_name, sent_size, expected_size, return_type)                         \
-  if (sent_size != (ssize_t)(expected_size)) {                                                                   \
-    LOGE("Failed to read " subarea_name " in " area_name ": Expected %zu, got %zd\n", expected_size, sent_size); \
-                                                                                                                 \
-    return_type;                                                                                                 \
-  }
+#define ASSURE_SIZE_READ(area_name, subarea_name, sent_size, expected_size, return_type)												 \
+	if (sent_size != (ssize_t)(expected_size)) {																																	 \
+		LOGE("Failed to read " subarea_name " in " area_name ": Expected %zu, got %zd\n", expected_size, sent_size); \
+																																																								 \
+		return_type;																																																 \
+	}
 
-#define IS_ISOLATED_SERVICE(uid)      \
-  ((uid) >= 90000 && (uid) < 1000000)
+#define IS_ISOLATED_SERVICE(uid)			\
+	((uid) >= 90000 && (uid) < 1000000)
 
-#define write_func_def(type)              \
-  ssize_t write_## type(int fd, type val)
+#define write_func_def(type)							\
+	ssize_t write_## type(int fd, type val)
 
-#define read_func_def(type)               \
-  ssize_t read_## type(int fd, type *val)
+#define read_func_def(type)							 \
+	ssize_t read_## type(int fd, type *val)
 
 bool switch_mount_namespace(pid_t pid);
 

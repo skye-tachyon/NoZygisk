@@ -16,16 +16,16 @@ else
 	TYPE_LDFLAGS =
 endif
 
-ZYGISKD_CFLAGS = -D_GNU_SOURCE -std=c99 -Wpedantic -Wall -Wextra -Werror  \
+ZYGISKD_CFLAGS = -D_GNU_SOURCE -std=c99 -Wpedantic -Wall -Wextra -Werror	\
 			 	 -Wformat -Wuninitialized -Wshadow -Wno-zero-length-array \
-			 	 -Wno-fixed-enum-extension -Wno-unknown-warning-option    \
-				 -Wno-c23-extensions -Wconversion                         \
-				 -DMIN_KSU_VERSION=$(MIN_KSU_VERSION)                     \
+			 	 -Wno-fixed-enum-extension -Wno-unknown-warning-option		\
+				 -Wno-c23-extensions -Wconversion												 \
+				 -DMIN_KSU_VERSION=$(MIN_KSU_VERSION)										 \
 				 '-DZKSU_VERSION="$(ZKSU_VERSION)"'
 
-SRCS = src/root_impl/common.c        \
-	   src/root_impl/kernelsu.c                               \
-	   src/companion.c src/main.c src/utils.c src/zygiskd.c
+SRCS = src/root_impl/common.c				\
+		 src/root_impl/kernelsu.c															 \
+		 src/companion.c src/main.c src/utils.c src/zygiskd.c
 
 OBJS = $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 BIN = $(OBJ_DIR)/zygiskd
@@ -34,7 +34,7 @@ INCLUDES = -Isrc -Isrc/root_impl
 .PHONY: all arch clean
 
 all:
-	@for arch in $(ARCHS); do                                                                                  \
+	@for arch in $(ARCHS); do																																									\
 		$(MAKE) BUILD_TYPE=$(BUILD_TYPE) BUILD_DIR=$(BUILD_DIR) ARCH=$$arch ZKSU_VERSION=$(ZKSU_VERSION) arch; \
 	done
 

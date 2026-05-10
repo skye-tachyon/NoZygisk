@@ -25,18 +25,18 @@ ZYGISKD_DONE = $(OBJ_DIR)/zygiskd/.done
 MODULE_DONE = $(BUILD_DIR)/module-$(BUILD_TYPE).done
 
 LOADER_INPUTS = common.mk loader/Makefile \
-        $(shell find loader/src -type f | sort)
+				$(shell find loader/src -type f | sort)
 
 ZYGISKD_INPUTS = common.mk zygiskd/Makefile \
-        $(shell find zygiskd/src -type f | sort)
+				$(shell find zygiskd/src -type f | sort)
 
 MODULE_INPUTS = scripts/sign.py \
-        $(shell find module/src -type f | sort) \
-        $(wildcard module/private_key module/public_key)
+				$(shell find module/src -type f | sort) \
+				$(wildcard module/private_key module/public_key)
 
-.PHONY: debug release build clean                                         \
-        installKsu                                                        \
-        installKsuAndReboot
+.PHONY: debug release build clean																				 \
+				installKsu																												\
+				installKsuAndReboot
 
 debug:
 	$(MAKE) BUILD_TYPE=debug BUILD_DIR=$(BUILD_DIR) build
@@ -67,34 +67,34 @@ $(MODULE_DONE): $(LOADER_DONE) $(ZYGISKD_DONE) $(MODULE_INPUTS)
 	@cp module/src/verify.sh module/src/sepolicy.rule module/src/nozygisk.sh $(MODULE_OUT)/
 
 	@echo "Customizing module.prop..."
-	@sed -e 's/$${moduleId}/$(MODULE_ID)/g'                                             \
-	    -e 's/$${moduleName}/$(MODULE_NAME)/g'                                          \
-	    -e 's/$${versionName}/$(VER_NAME) ($(VER_CODE)-$(VER_CODE2)-$(COMMIT_HASH)-$(BUILD_TYPE))/g' \
-	    -e 's/$${versionCode}/$(VER_CODE)/g'                                            \
-	    module/src/module.prop > $(MODULE_OUT)/module.prop
+	@sed -e 's/$${moduleId}/$(MODULE_ID)/g'																						 \
+			-e 's/$${moduleName}/$(MODULE_NAME)/g'																					\
+			-e 's/$${versionName}/$(VER_NAME) ($(VER_CODE)-$(VER_CODE2)-$(COMMIT_HASH)-$(BUILD_TYPE))/g' \
+			-e 's/$${versionCode}/$(VER_CODE)/g'																						\
+			module/src/module.prop > $(MODULE_OUT)/module.prop
 
 	@echo "Customizing scripts..."
 	@for script in customize.sh post-fs-data.sh service.sh uninstall.sh; do \
 		sed -e 's/@DEBUG@/$(if $(filter debug,$(BUILD_TYPE)),true,false)/g' \
-		    -e 's/@MIN_KSU_VERSION@/$(MIN_KSU_VERSION)/g'                   \
-		    -e 's/@MIN_KSUD_VERSION@/$(MIN_KSUD_VERSION)/g'                 \
-		    module/src/$$script > $(MODULE_OUT)/$$script;                   \
+				-e 's/@MIN_KSU_VERSION@/$(MIN_KSU_VERSION)/g'									 \
+				-e 's/@MIN_KSUD_VERSION@/$(MIN_KSUD_VERSION)/g'								 \
+				module/src/$$script > $(MODULE_OUT)/$$script;									 \
 	done
 
 	@echo "Copying binaries..."
-	@for arch in $(ARCHS); do                                                                                  \
-		mkdir -p $(MODULE_OUT)/bin/$$arch $(MODULE_OUT)/lib/$$arch;                                            \
-		cp $(OBJ_DIR)/zygiskd/$$arch/zygiskd $(MODULE_OUT)/bin/$$arch/zygiskd;                                 \
-		cp $(OBJ_DIR)/loader/$$arch/stripped/libzygisk.so $(MODULE_OUT)/lib/$$arch/libzygisk.so;               \
+	@for arch in $(ARCHS); do																																									\
+		mkdir -p $(MODULE_OUT)/bin/$$arch $(MODULE_OUT)/lib/$$arch;																						\
+		cp $(OBJ_DIR)/zygiskd/$$arch/zygiskd $(MODULE_OUT)/bin/$$arch/zygiskd;																 \
+		cp $(OBJ_DIR)/loader/$$arch/stripped/libzygisk.so $(MODULE_OUT)/lib/$$arch/libzygisk.so;							 \
 		cp $(OBJ_DIR)/loader/$$arch/stripped/libzygisk_ptrace.so $(MODULE_OUT)/lib/$$arch/libzygisk_ptrace.so; \
 	done
 
-	@if [ -f module/private_key ]; then                                             \
-		echo "Signing module...";                                                   \
+	@if [ -f module/private_key ]; then																						 \
+		echo "Signing module...";																									 \
 		python3 scripts/sign.py $(MODULE_OUT) module/private_key module/public_key; \
-	else                                                                            \
-	    echo "No private key found, skipping signing...";                           \
-		python3 scripts/sign.py --no-sign $(MODULE_OUT);                            \
+	else																																						\
+			echo "No private key found, skipping signing...";													 \
+		python3 scripts/sign.py --no-sign $(MODULE_OUT);														\
 	fi
 
 	@mkdir -p $(dir $@)

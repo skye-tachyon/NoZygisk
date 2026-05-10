@@ -9,29 +9,29 @@ OBJ_DIR = $(OBJ_ROOT)/$(ARCH)
 ZKSU_VERSION ?= $(VER_NAME)-$(VER_CODE)-$(VER_CODE2)-$(COMMIT_HASH)-$(BUILD_TYPE)
 
 ifeq ($(BUILD_TYPE),release)
-	TYPE_CFLAGS = -O3 -ffast-math -flto -Wno-unused -Wno-unused-parameter       \
-				  -fvisibility=hidden -fvisibility-inlines-hidden -fno-unwind-tables \
-				  -fno-asynchronous-unwind-tables -DNDEBUG
+	TYPE_CFLAGS = -O3 -ffast-math -flto -Wno-unused -Wno-unused-parameter			 \
+					-fvisibility=hidden -fvisibility-inlines-hidden -fno-unwind-tables \
+					-fno-asynchronous-unwind-tables -DNDEBUG
 	TYPE_LDFLAGS = -Wl,--exclude-libs,ALL -Wl,--strip-all -flto
 else
 	TYPE_CFLAGS = -g -O0
 	TYPE_LDFLAGS =
 endif
 
-LOADER_CFLAGS = -std=c18 -D_GNU_SOURCE -Wall -Wextra -fno-rtti -fno-exceptions         \
+LOADER_CFLAGS = -std=c18 -D_GNU_SOURCE -Wall -Wextra -fno-rtti -fno-exceptions				 \
 				-fno-stack-protector -fomit-frame-pointer -Wno-builtin-macro-redefined \
 				'-D__FILE__=__FILE_NAME__' -DZKSU_VERSION=\"$(ZKSU_VERSION)\"
 
-COMMON_LDFLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment           \
+COMMON_LDFLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment					 \
 				 -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined \
 				 -Qunused-arguments -Wl,--gc-sections
 
 COMMON_SRCS = src/common/daemon.c src/common/elf_util.c src/common/ifunc_shim.c \
-			  src/common/misc.c src/common/socket_utils.c
+				src/common/misc.c src/common/socket_utils.c
 INJECTOR_SRCS = src/injector/cpp_strings.c src/injector/entry.c \
 				src/injector/hook.c src/injector/ptrace_clear.c
 PTRACER_SRCS = src/ptracer/main.c src/ptracer/monitor.c src/ptracer/ptracer.c \
-			   src/ptracer/remote_csoloader.c src/ptracer/utils.c
+				 src/ptracer/remote_csoloader.c src/ptracer/utils.c
 
 COMMON_OBJS = $(patsubst src/common/%.c,$(OBJ_DIR)/common/%.o,$(COMMON_SRCS))
 INJECTOR_OBJS = $(patsubst src/injector/%.c,$(OBJ_DIR)/injector/%.o,$(INJECTOR_SRCS))
@@ -55,7 +55,7 @@ INJECTOR_INCLUDES = -Isrc/include -I$(PLTI_DIR)/src -I$(CSOLOADER_DIR)/include
 .PHONY: all arch clean
 
 all:
-	@for arch in $(ARCHS); do                                                                                  \
+	@for arch in $(ARCHS); do																																									\
 		$(MAKE) BUILD_TYPE=$(BUILD_TYPE) BUILD_DIR=$(BUILD_DIR) ARCH=$$arch ZKSU_VERSION=$(ZKSU_VERSION) arch; \
 	done
 
@@ -72,13 +72,13 @@ clean:
 $(PLTI_LIB):
 	@mkdir -p $(dir $@)
 	$(MAKE) -C $(PLTI_DIR) BUILD_TYPE=$(BUILD_TYPE) ARCH=$(ARCH) \
-		NDK_PATH=$(NDK_PATH) API_LEVEL=$(API_LEVEL)              \
+		NDK_PATH=$(NDK_PATH) API_LEVEL=$(API_LEVEL)							\
 		out=$(BUILD_DIR)/obj/$(BUILD_TYPE)/plti/$(ARCH)
 
 $(CSOLOADER_LIB):
 	@mkdir -p $(dir $@)
 	$(MAKE) -C $(CSOLOADER_DIR) BUILD_TYPE=$(BUILD_TYPE) ARCH=$(ARCH) \
-		NDK_PATH=$(NDK_PATH) API_LEVEL=$(API_LEVEL)                   \
+		NDK_PATH=$(NDK_PATH) API_LEVEL=$(API_LEVEL)									 \
 		out=$(BUILD_DIR)/obj/$(BUILD_TYPE)/csoloader/$(ARCH)
 
 $(OBJ_DIR)/common/%.o: src/common/%.c
@@ -102,8 +102,8 @@ $(LIBCOMMON): $(COMMON_OBJS)
 
 $(LIBZYGISK): $(INJECTOR_OBJS) $(LIBCOMMON) $(PLTI_LIB) $(CSOLOADER_LIB)
 	@mkdir -p $(dir $@)
-	$(CC_ARCH) -fPIC -shared -Wl,-soname,libzygisk.so              \
-		$(COMMON_LDFLAGS) $(TYPE_LDFLAGS) -nostartfiles            \
+	$(CC_ARCH) -fPIC -shared -Wl,-soname,libzygisk.so							\
+		$(COMMON_LDFLAGS) $(TYPE_LDFLAGS) -nostartfiles						\
 		$(INJECTOR_OBJS) $(LIBCOMMON) $(PLTI_LIB) $(CSOLOADER_LIB) \
 		-llog -lm -o $@
 

@@ -11,35 +11,35 @@
 #define DAEMON_SET_ERROR_INFO LP_SELECT(9, 8)
 
 enum DaemonSocketAction {
-  ZygoteInjected         = 0,
-  GetProcessFlags        = 1,
-  GetInfo                = 2,
-  ReadModules            = 3,
-  RequestCompanionSocket = 4,
-  GetModuleDir           = 5,
-  ZygoteRestart          = 6,
-  UpdateMountNamespace   = 7,
-  RemoveModule           = 8
+	ZygoteInjected				 = 0,
+	GetProcessFlags				= 1,
+	GetInfo								= 2,
+	ReadModules						= 3,
+	RequestCompanionSocket = 4,
+	GetModuleDir					 = 5,
+	ZygoteRestart					= 6,
+	UpdateMountNamespace	 = 7,
+	RemoveModule					 = 8
 };
 
 enum ProcessFlags: uint32_t {
-  PROCESS_GRANTED_ROOT = (1u << 0),
-  PROCESS_ON_DENYLIST = (1u << 1),
-  PROCESS_IS_MANAGER = (1u << 27),
-  PROCESS_ROOT_IS_KSU = (1u << 29),
-  PROCESS_IS_FIRST_STARTED = (1u << 31)
+	PROCESS_GRANTED_ROOT = (1u << 0),
+	PROCESS_ON_DENYLIST = (1u << 1),
+	PROCESS_IS_MANAGER = (1u << 27),
+	PROCESS_ROOT_IS_KSU = (1u << 29),
+	PROCESS_IS_FIRST_STARTED = (1u << 31)
 };
 
 enum RootImplState {
-  Supported,
-  TooOld,
-  Inexistent,
-  Abnormal
+	Supported,
+	TooOld,
+	Inexistent,
+	Abnormal
 };
 
 enum MountNamespaceState {
-  Clean,
-  Mounted
+	Clean,
+	Mounted
 };
 
 #endif /* CONSTANTS_H */

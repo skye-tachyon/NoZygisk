@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 /* INFO: Read a C string pointer from a std::string object.
-           The returned pointer is valid only as long as the std::string exists. */
+					 The returned pointer is valid only as long as the std::string exists. */
 const char *read_std_string(const void *std_string_ptr);
 
 /* INFO: Get the length of a std::string object (not including null terminator). */
