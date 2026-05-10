@@ -69,7 +69,6 @@ void ksu_get_existence(struct root_impl_state *state) {
 
     /* INFO: Not a fatal error, just log and continue */
   }
-	state->variant = KOfficial;
 
   state->state = Supported;
 }
